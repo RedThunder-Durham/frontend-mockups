@@ -288,7 +288,7 @@ url('http://www.pvcc.co.uk/wp-content/themes/pvca/config-templatebuilder/avia-te
 <input type="hidden" name="_wpcf7_container_post" value="0">
 </div>
 
-<table style="width:100%">
+<table style="width:100%; table-layout:fixed;">
   <tr>
     <th>Mon</th>
     <th>Tue</th>
@@ -299,62 +299,59 @@ url('http://www.pvcc.co.uk/wp-content/themes/pvca/config-templatebuilder/avia-te
     <th>Sun</th>
   </tr>
   <tr>
-    <td></td>
-    <td></td> 
-    <td></td>
-    <td><p>1 <br> Badminton 13:00 - 14:00 <br> Drama Theatre 17:00 - 18:00</p></td>
+    <td>29</td>
+    <td>30</td> 
+    <td>31</td>
+    <td><p>1<br>Badminton 13:00 - 14:00<br>Drama Theatre 17:00 - 18:00</p></td>
     <td>2</td> 
     <td>3</td>
-	<td>4</td>
+    <td>4</td>
   </tr>
-  <tr>
-<td><p>1 <br> Badminton 15:00 - 16:00 <br> Drama Theatre 17:00 - 18:00</p></td>
-<td>6</td>
-<td>7</td>
-<td>8</td>
-<td>9</td>
-<td><p>10 <br> Badminton 15:00 - 16:00 <br> Drama Theatre 17:00 - 18:00</p></td>
-<td>11</td>
-  </tr>
-  <tr>
-<td>12</td>
-<td>13</td>
-<td><p>14 <br> Badminton 15:00 - 16:00 <br> Drama Theatre 17:00 - 18:00</p></td>
-<td>15</td>
-<td>16</td>
-<td>17</td>
-<td>18</td>
-  </tr>
-<td>19</td>
-<td><p>20 <br> Badminton 15:00 - 16:00 <br> Drama Theatre 17:00 - 18:00</p></td>
-<td>21</td>
-<td>22</td>
-<td>23</td>
-<td>24</td>
-<td><p>25 <br> Badminton 15:00 - 16:00 <br> Drama Theatre 17:00 - 18:00</p></td>
-  <tr>
-<td>26</td>
-<td>27</td>
-<td><p>28 <br> Badminton 15:00 - 16:00 <br> Drama Theatre 17:00 - 18:00</p></td>
-<td>29</td>
-<td><p>30 <br> Badminton 15:00 - 16:00 <br> Drama Theatre 17:00 - 18:00</p></td>
-<td></td>
-<td></td>
-  </tr>
-</table> 
+</table>
+
+<button id='prev-week'>Previous Week</button>
+<button id='next-week' style='float: right'>Next Week</button>
 
 <p>Which facility, event or activity?<br>
 <select class="wpcf7-form-control-wrap the-activity">
 	<option value="Badminton">Badminton</option>
 	<option value="Drama Theatre">Drama Theatre</option>
 </select></p>
-<p>Your Name<br>
+
+<p>
+  Day
+<select class="wpcf7-form-control-wrap the-day">
+  <option value="29/10">29 Oct</option>
+  <option value="30/10">30 Oct</option>
+  <option value="31/10">31 Oct</option>
+  <option value="01/11">01 Nov</option>
+  <option value="02/11">02 Nov</option>
+  <option value="03/11">03 Nov</option>
+  <option value="04/11">04 Nov</option>
+</select>
+</p>
+
+<p>
+  Start Time
+<select class="wpcf7-form-control-wrap start-time"></select>
+</p>
+
+<p>
+  End Time
+<select class="wpcf7-form-control-wrap end-time"></select>
+</p>
+
+<hr/>
+<p>
+  Personal details
+
+<p>Name<br>
 
     <span class="wpcf7-form-control-wrap your-name"><input type="text" name="your-name" value="" size="40" class="wpcf7-form-control wpcf7-text wpcf7-validates-as-required" aria-required="true" aria-invalid="false"></span> </p>
-<p>Your Email<br>
+<p>Email<br>
     <span class="wpcf7-form-control-wrap your-email"><input type="email" name="your-email" value="" size="40" class="wpcf7-form-control wpcf7-text wpcf7-email wpcf7-validates-as-required wpcf7-validates-as-email" aria-required="true" aria-invalid="false"></span> </p>
 <p><input type="checkbox" name="vehicle" value="Bike">Check For Email Booking Notification<br></p>
-<p>Your Telephone<br>
+<p>Telephone<br>
     <span class="wpcf7-form-control-wrap your-telephone"><input type="text" name="your-telephone" value="" size="40" class="wpcf7-form-control wpcf7-text wpcf7-validates-as-required" aria-required="true" aria-invalid="false"></span> </p>
 <p>For Special Requirements (Including Non-PayPal Payments) Please Ring 01234567890</p>
     <script src="https://www.paypalobjects.com/api/checkout.js"></script>
@@ -672,5 +669,58 @@ var _wpmejsSettings = {"pluginPath":"\/wp-includes\/js\/mediaelement\/"};
 
 <div id="fb-root"></div>
 
+<script>
+(function() {
+  var activity = document.querySelector('.the-activity');
+  var the_day = document.querySelector('.the-day');
+  var start_time = document.querySelector('.start-time');
+  var end_time = document.querySelector('.end-time');
+  var occupied = ['01/11'];
+
+  function onChange() {
+    var slots = [
+      '08:00',
+      '09:00',
+      '10:00',
+      '11:00',
+      '12:00',
+      '13:00',
+      '14:00',
+      '15:00',
+      '16:00',
+      '17:00',
+      '18:00',
+      '19:00',
+      '20:00',
+    ];
+    // NOTE:
+    // currently this does not really make sense, but it is fine
+    // as we are going to fix it in the future(TM)
+    if (occupied.indexOf(the_day.value) !== -1) {
+      if (activity.value === 'Badminton') {
+        slots.splice(6, 1); // delete slots[6];
+        slots.splice(5, 1); // delete slots[5];
+      } else {
+        // drama
+        slots.splice(10, 1); // delete slots[10];
+        slots.splice(9,  1); // delete slots[9];
+      }
+    }
+    start_time.innerHTML = '';
+    end_time.innerHTML = '';
+    for (var i = 0; i < slots.length-1; i++) {
+      var s = document.createElement('option');
+      var e = document.createElement('option');
+      s.text = slots[i];
+      e.text = slots[i+1];
+      start_time.appendChild(s);
+      end_time.appendChild(e);
+    }
+  }
+
+  the_day.addEventListener('change', onChange);
+  onChange();
+})();
+</script>
 
 </body></html>
